@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "295618886102",
+    "project_id": "pddh-sat-edd5e",
+    "storage_bucket": "pddh-sat-edd5e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295618886102:android:2064d45045836b2b420c77",
+        "android_client_info": {
+          "package_name": "com.thenextservices.sat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295618886102-ck6po8u4s9odto0n2t2fjclo728t76fg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgGlTz-RkM5GzRYGbOrS5UJrChZ0UeKC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295618886102-ck6po8u4s9odto0n2t2fjclo728t76fg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
