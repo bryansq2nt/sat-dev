@@ -8,4 +8,14 @@ class DefaultQuestionProperties {
   dynamic answer;
 
   DefaultQuestionProperties({required this.hint,this.limit,this.maxLines = 1,this.mask, this.answer = ""});
+
+  Map<String, dynamic> toJson() => {
+        "hint": hint,
+        "required": required,
+        "limit": limit,
+        "max_lines": maxLines,
+        "enabled": enabled,
+        "mask": mask,
+        "answer": answer
+      };
 }

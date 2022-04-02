@@ -86,19 +86,6 @@ class EarlyWarningsService {
 
       FormModel formModel = FormModel.fromJson(response?.data['form']);
 
-
-      // int sections = 0;
-      // sections = formModel.sections.length;
-      //
-      // for(int i = 0; i < sections; i++){
-      //   int questions = 0;
-      //   questions = formModel.sections[i].questions.length;
-      //
-      //
-      //   for(int j = 0; j < questions; j++){
-      //     formModel.sections[i].questions[j]!.allAnswers = formModel.sections[i].questions[j]!.answers;
-      //   }
-      // }
       return formModel;
     } catch (e,stacktrace) {
       log("${e.toString()} $stacktrace");
@@ -503,19 +490,7 @@ class EarlyWarningsService {
       Map<String, dynamic> json =
       await SaveLocallyService().readFromLocal(fileName: "earlyWarningForm");
       FormModel formModel = FormModel.fromJson(json);
-      int sections = 0;
-      sections = formModel.sections.length;
-    
-      for(int i = 0; i < sections; i++){
-        int questions = 0;
-        questions = formModel.sections[i].questions.length;
-        
-
-        for(int j = 0; j < questions; j++){
-          formModel.sections[i].questions[j]!.answers = formModel.sections[i].questions[j]!.answers;
-        }
-      }
-
+     
       return formModel;
     } catch (e,stacktrace) {
       log("${e.toString()} $stacktrace");

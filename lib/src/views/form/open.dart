@@ -15,7 +15,7 @@ class OpenFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       enabled: properties.enabled,
-      initialValue: properties.answer.toString(),
+      initialValue: properties.answer.toString() != "null" ? properties.answer.toString() : "",
       name: question.questionId,
       maxLines: properties.maxLines,
       maxLength: properties.limit,

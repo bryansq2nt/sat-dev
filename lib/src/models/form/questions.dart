@@ -10,6 +10,7 @@ import 'package:sat/src/models/form/question_model.dart';
 import 'package:sat/src/models/form/questions/boolean.dart';
 import 'package:sat/src/models/form/questions/date.dart';
 import 'package:sat/src/models/form/questions/dropdown.dart';
+import 'package:sat/src/models/form/questions/image.dart';
 import 'package:sat/src/models/form/questions/numeric.dart';
 import 'package:sat/src/models/form/questions/text.dart';
 
@@ -55,9 +56,21 @@ class QuestionsUtilities {
   dynamic getAnswer(QuestionTypes type,dynamic value){
 
 
+    log(type.name);
     if(value == null){
       if(type == QuestionTypes.open){
         return "";
+      }
+       if(type == QuestionTypes.closed){
+         log("\n\n\n\n\n");
+                log("================================================");
+          log(value.toString());
+      }
+    } else {
+      if(type == QuestionTypes.closed){
+         log("\n\n\n\n\n");
+                log("================================================");
+          log(value.toString());
       }
     }
 
@@ -72,7 +85,6 @@ class QuestionsUtilities {
           sectionId: e['section_id'] ?? "",
           questionId: e['question_id'],
           questionTitle: e['question'],
-          questionType: getType(json['question_type']),
           dependent: e['dependent'] ?? false,
           dependentSectionId: e['dependent_section_id'],
           dependentQuestionId: e['dependent_question_id'],
@@ -80,16 +92,19 @@ class QuestionsUtilities {
           dependentMultiple: e['dependent_multiple'] ?? false,
           questionDependentQuestions: e['dependent_questions'] ?? [],
           downloadedJson: e);
+
+      defaultQuestion.questionType = QuestionTypes.open;
       DefaultQuestionProperties defaultProperties = DefaultQuestionProperties(
           hint: e['hint'] ?? "",
           limit: e['limit'],
           maxLines: e["max_lines"] ?? 1,
           mask: e['mask'] ?? "",
-          answer: getAnswer(getType(json['question_type']), e['answer'])
+          answer: e['answer']
       );
-      TextQuestion newQuestion = TextQuestion(question: defaultQuestion, defaultProperties: defaultProperties);
+      TextQuestion dfq = TextQuestion(question: defaultQuestion, defaultProperties: defaultProperties);
       switch(e['question_type']){
         case 'numeric':
+        defaultQuestion.questionType = QuestionTypes.numeric;
           NumericQuestion newQuestion = NumericQuestion(
               question: defaultQuestion,
               defaultProperties: defaultProperties,
@@ -100,6 +115,7 @@ class QuestionsUtilities {
           questions.add(newQuestion);
           break;
         case 'date':
+        defaultQuestion.questionType = QuestionTypes.date;
           DateQuestion newQuestion = DateQuestion(
               question: defaultQuestion,
               defaultProperties: defaultProperties,
@@ -112,10 +128,13 @@ class QuestionsUtilities {
           questions.add(newQuestion);
           break;
         case 'closed':
+        defaultQuestion.questionType = QuestionTypes.closed;
+
           DropDownQuestion newQuestion = DropDownQuestion(
               question: defaultQuestion,
               defaultProperties: defaultProperties,
               dropdownProperties: DropDownQuestionProperties(
+                searchable:  e['searchable'] ?? false,
                 multiSelect: e['multi_select'] ?? false,
                   answers: List<DropDownAnswer>.from( e['answers'].map((x) => DropDownAnswer.fromJson(x)))  ,
                   answersToShow: [],
@@ -123,9 +142,20 @@ class QuestionsUtilities {
                   principalChild: e['principal_child'],
                   children: e['children'] != null ? List<String>.from(e['children'].map((e) => e)) : null
               ));
+              if(defaultQuestion.questionId == "id_perfil_actor"){
+               
+               /* log("\n\n\n\n\n");
+                log("================================================");
+          log(newQuestion.dropdownProperties.toJson().toString());
+          log("================================================");
+          log(newQuestion.defaultProperties.answer.toString());
+          log("\n\n\n\n\n");*/
+        }
+       
           questions.add(newQuestion);
           break;
         case "switch":
+        defaultQuestion.questionType = QuestionTypes.boolean;
           BooleanQuestion newQuestion = BooleanQuestion(
               question: defaultQuestion,
               defaultProperties: defaultProperties,
@@ -135,9 +165,17 @@ class QuestionsUtilities {
           );
           questions.add(newQuestion);
           break;
+           case "image":
+        defaultQuestion.questionType = QuestionTypes.image;
+          ImageQuestion newQuestion = ImageQuestion(
+              question: defaultQuestion,
+              defaultProperties: defaultProperties
+            );
+          questions.add(newQuestion);
+          break;
         case "bool":
           break;
-        default: questions.add(newQuestion); break;
+        default: questions.add(dfq); break;
       }
     }
     return questions;

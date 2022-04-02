@@ -11,7 +11,7 @@ class QuestionModel {
     required this.sectionId,
     required this.questionId,
     required this.questionTitle,
-    required this.questionType,
+    this.questionType,
     required this.dependent,
     required this.dependentMultiple,
     this.dependentSectionId,
@@ -24,7 +24,7 @@ class QuestionModel {
   final String sectionId;
   final String questionId;
   final String questionTitle;
-  final QuestionTypes questionType;
+  QuestionTypes? questionType;
 
   bool dependent;
   String? dependentSectionId;
@@ -45,7 +45,7 @@ class QuestionModel {
     "section_id": sectionId,
     "question_id": questionId,
     "question_title": questionTitle,
-    "question_type": questionType.name,
+    "question_type": questionType!.name,
     "dependent": dependent,
     "dependent_section_id": dependentSectionId,
     "dependent_question_id": dependentQuestionId,

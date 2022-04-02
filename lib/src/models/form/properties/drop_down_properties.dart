@@ -5,10 +5,28 @@ class DropDownQuestionProperties {
   final String? principalChild;
   final List<String>? children;
   final bool multiSelect;
+  final bool searchable;
 
-  DropDownQuestionProperties({required this.multiSelect,required this.answers, required this.answersToShow,required this.hasChild, this.principalChild, this.children});
+  DropDownQuestionProperties(
+      {
+        required this.searchable,
+        required this.multiSelect,
+      required this.answers,
+      required this.answersToShow,
+      required this.hasChild,
+      this.principalChild,
+      this.children});
+
+  Map<String, dynamic> toJson() => {
+        "answers": answers.map((e) => e.toJson()),
+        "answersToShow": answersToShow.map((e) => e.toJson()),
+        "has_child": hasChild,
+        "principal_child": principalChild,
+        "children": children,
+        "multi_select": multiSelect,
+        "searchable":searchable
+      };
 }
-
 
 class DropDownAnswer {
   DropDownAnswer({this.answerId, required this.answer, this.toCompare});
