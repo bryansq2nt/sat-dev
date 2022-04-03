@@ -28,12 +28,12 @@ import 'package:sat/src/views/home/components/bottom_bar.dart';
 import '../../models/form/form_v1.dart';
 import '../form/numeric_mask.dart';
 
-
 class CaseProcessingAdd extends StatefulWidget {
   final int formId;
   final bool enabled;
 
-  const CaseProcessingAdd({Key? key,required this.formId, this.enabled = true}) : super(key: key);
+  const CaseProcessingAdd({Key? key, required this.formId, this.enabled = true})
+      : super(key: key);
   @override
   _CaseProcessingAddState createState() => _CaseProcessingAddState();
 }
@@ -53,7 +53,6 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
     "Enviar"
   ];
 
-
   late PageController _controller;
 
   final GlobalKey<FormBuilderState> _formKey1 = GlobalKey<FormBuilderState>();
@@ -65,15 +64,11 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
       error = false;
     });
 
-
-
     if (widget.formId == null) {
       this.form = await CaseProcessingService().getFormToFill();
-
     } else {
-
       this.form =
-      await CaseProcessingService().getLocallyForm(formId: widget.formId);
+          await CaseProcessingService().getLocallyForm(formId: widget.formId);
 
       // if (form == null) {
       //   this.form =
@@ -93,13 +88,11 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
   }
 
   Future<bool> _saveToLocal() async {
-
     try {
       this.form?.formId = (await CaseProcessingProvider().saveToLocal(
           listName: "case_processing", form: this.form!, context: context))!;
       if (this.form?.formId != 0 && this.form?.formId != null) {
         added = true;
-
       }
 
       return true;
@@ -109,19 +102,15 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
           "Lo sentimos ha ocurrido un error al intentar guardar el formulario.");
       return false;
     }
-
-
   }
 
   void _sendToSigi() async {
+    FormModel? tempForm = await CaseProcessingService()
+        .sendToSigi(form: this.form!, context: context);
 
-    FormModel? tempForm = await CaseProcessingService().sendToSigi(
-      form: this.form!,
-      context: context
-    );
-
-    if(tempForm == null){
-      errorCreatingCase("Lo sentimos ha ocurrido un error al intentar enviar el caso al SIGI.");
+    if (tempForm == null) {
+      errorCreatingCase(
+          "Lo sentimos ha ocurrido un error al intentar enviar el caso al SIGI.");
       return;
     }
 
@@ -132,14 +121,13 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
   }
 
   caseCreated(String text) {
-
     AwesomeDialog(
         isDense: true,
         context: context,
         dismissOnBackKeyPress: false,
         dismissOnTouchOutside: false,
-        onDissmissCallback: (val){
-          Navigator.pop(context,added);
+        onDissmissCallback: (val) {
+          Navigator.pop(context, added);
         },
         dialogType: DialogType.SUCCES,
         padding: EdgeInsets.all(20.0),
@@ -179,35 +167,38 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
       ..show();
   }
 
-  void _nextTab(GlobalKey<FormBuilderState> formKey) async  {
-    if(widget.enabled && formKey != null && !_validate(formKey)){
+  void _nextTab(GlobalKey<FormBuilderState> formKey) async {
+    if (widget.enabled && formKey != null && !_validate(formKey)) {
       invalidForm();
       return;
     }
 
     bool saved = await _saveToLocal();
 
-    if(saved){
+    if (saved) {
       if (_currentIndex <= 3) {
         int tempIndex = _currentIndex + 1;
-        _controller.animateToPage(tempIndex, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
-        await Future.delayed(const Duration(microseconds: 500), (){
+        _controller.animateToPage(tempIndex,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOutCubic);
+        await Future.delayed(const Duration(microseconds: 500), () {
           setState(() {
-            _currentIndex ++;
+            _currentIndex++;
           });
         });
       }
     }
-
   }
 
   void _lastTab() async {
     if (_currentIndex > 0) {
       int tempIndex = _currentIndex - 1;
-      _controller.animateToPage(tempIndex, duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic);
-      await Future.delayed(const Duration(microseconds: 500), (){
+      _controller.animateToPage(tempIndex,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOutCubic);
+      await Future.delayed(const Duration(microseconds: 500), () {
         setState(() {
-          _currentIndex --;
+          _currentIndex--;
         });
       });
     }
@@ -222,23 +213,19 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
     }
   }
 
-  void initiPageViewController(){
-    Future.delayed(Duration(milliseconds: 50),(){
+  void initiPageViewController() {
+    Future.delayed(Duration(milliseconds: 50), () {
       setState(() {
         _controller = PageController(
           keepPage: true,
-          initialPage:  0,
+          initialPage: 0,
         );
       });
-
     });
-
-
-
   }
 
   void _back() {
-    if(widget.enabled){
+    if (widget.enabled) {
       AwesomeDialog(
           isDense: true,
           context: context,
@@ -252,22 +239,21 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
           btnOkOnPress: () {
             Navigator.pop(context, added);
           },
-          btnCancelOnPress: (){
+          btnCancelOnPress: () {
             return;
           },
-          btnOkColor: Color(0xFFF2B10F)
-      )..show();
+          btnOkColor: Color(0xFFF2B10F))
+        ..show();
     } else {
       Navigator.pop(context, added);
     }
-
   }
 
   @override
   void initState() {
     _getForm();
 
-   // initiPageViewController();
+    // initiPageViewController();
     _controller = PageController() //
       ..addListener(() {
         final _newPage = _controller.page?.round();
@@ -309,11 +295,10 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
         ),
         //backgroundColor: Color(0xFFe2e9fe),
         body: !loading && !error
-            ? SafeArea(
-            child: _form())
+            ? SafeArea(child: _form())
             : !error
-            ? _loading()
-            : _error(),
+                ? _loading()
+                : _error(),
         bottomNavigationBar: BottomBarWidget(),
       ),
     );
@@ -325,18 +310,16 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
     return Container(
       child: Center(
           child: Text(
-            _tabs[index],
-            style: TextStyle(
-                fontSize:  2 * SizeConfig.safeBlockVertical,
-                color: Colors.white,
-                fontWeight: !selected ? FontWeight.normal : FontWeight.bold),
-          )),
+        _tabs[index],
+        style: TextStyle(
+            fontSize: 2 * SizeConfig.safeBlockVertical,
+            color: Colors.white,
+            fontWeight: !selected ? FontWeight.normal : FontWeight.bold),
+      )),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
           color: Color(0xff0a58ca),
-          border: Border.all(
-              color: Colors.transparent,
-              width: 0),
+          border: Border.all(color: Colors.transparent, width: 0),
           borderRadius: BorderRadius.zero),
     );
   }
@@ -347,8 +330,8 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
         Container(
           padding: EdgeInsets.symmetric(
               horizontal: 1 * SizeConfig.blockSizeHorizontal),
-          margin: EdgeInsets.symmetric(
-              vertical: 1 * SizeConfig.blockSizeVertical),
+          margin:
+              EdgeInsets.symmetric(vertical: 1 * SizeConfig.blockSizeVertical),
           height: SizeConfig.blockSizeVertical * 6,
           child: ListView.builder(
             shrinkWrap: true,
@@ -360,12 +343,16 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
         ),
         Expanded(
           child: PageView(
-            controller:  _controller,
+            controller: _controller,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              KeepAlivePage(child: _questions(formKey: _formKey1, section: 0),),
+              KeepAlivePage(
+                child: _questions(formKey: _formKey1, section: 0),
+              ),
               KeepAlivePage(child: _involvedSection()),
-              KeepAlivePage(child: _questions(formKey: _formKey2, section: 1),),
+              KeepAlivePage(
+                child: _questions(formKey: _formKey2, section: 1),
+              ),
               _section4()
             ],
           ),
@@ -378,25 +365,31 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [ widget.enabled ? _submitButton() : Container(), _tabArrows(formKey: _controller.page! <= 0 ? _formKey1 : _formKey2)],
+        children: [
+          widget.enabled ? _submitButton() : Container(),
+          _tabArrows(formKey: _controller.page! <= 0 ? _formKey1 : _formKey2)
+        ],
       ),
     );
   }
 
-  Widget _involvedSection(){
+  Widget _involvedSection() {
     return Column(
       children: [
-        InvolvedTableWidget(caseId: this.form!.formId,enabled: widget.enabled,),
-
+        InvolvedTableWidget(
+          caseId: this.form!.formId,
+          enabled: widget.enabled,
+        ),
         _tabArrows(formKey: _controller.page! <= 0 ? _formKey1 : _formKey2)
       ],
     );
   }
 
-  Widget _questions({required GlobalKey<FormBuilderState> formKey,required int section}) {
+  Widget _questions(
+      {required GlobalKey<FormBuilderState> formKey, required int section}) {
     return Padding(
       padding:
-      EdgeInsets.symmetric(horizontal: 5 * SizeConfig.blockSizeHorizontal),
+          EdgeInsets.symmetric(horizontal: 5 * SizeConfig.blockSizeHorizontal),
       child: FormBuilder(
         key: formKey,
         enabled: widget.enabled,
@@ -406,27 +399,26 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
         child: ListView.builder(
           //physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: form?.sections != null ? form!.sections[section].questions.length + 1 : 0,
+          itemCount: form?.sections != null
+              ? form!.sections[section].questions.length + 1
+              : 0,
           itemBuilder: (BuildContext context, int question) {
-
-            if(question < form!.sections[section].questions.length){
+            if (question < form!.sections[section].questions.length) {
               bool show = false;
               dynamic currentQuestion =
-              form!.sections[section].questions[question];
+                  form!.sections[section].questions[question];
               if (currentQuestion.dependent ||
                   currentQuestion.dependentMultiple) {
                 for (SectionModel sectionToCheck in form!.sections) {
                   if (sectionToCheck.sectionId ==
                       currentQuestion.dependentSectionId) {
-                    for (dynamic questionToCheck
-                    in sectionToCheck.questions) {
+                    for (dynamic questionToCheck in sectionToCheck.questions) {
                       if (questionToCheck.questionId ==
                           currentQuestion.dependentQuestionId) {
-                        if (form!.sections[section].questions[question]
-                            .dependent) {
+                        if (form!
+                            .sections[section].questions[question].dependent) {
                           if (questionToCheck.answer ==
                               currentQuestion.dependentAnswer) {
-
                             show = true;
                           }
                         } else {
@@ -443,37 +435,42 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
                 show = true;
               }
 
-              if (show ) {
+              if (show) {
                 switch (
                     form!.sections[section].questions[question].questionType) {
                   case "open":
                     return OpenFieldWidget(
                       question: currentQuestion.question,
                       properties: currentQuestion.defaultProperties,
-
                     );
                   case "numeric":
                     return NumericFieldWidget(
+                        curentSection: SectionModel(
+                            sectionId: "",
+                            questions: [],
+                            sectionDependentQuestions: []),
                         question: currentQuestion.question,
                         properties: currentQuestion.defaultProperties,
-                        numericProperties: currentQuestion.numericProperties
-                    );
+                        numericProperties: currentQuestion.numericProperties);
                   case "numeric_mask":
                     return NumericMaskFieldWidget(
                         question: currentQuestion.question,
-                        properties: currentQuestion.defaultProperties
-                    );
+                        properties: currentQuestion.defaultProperties);
                   case "area":
                     return AreaFieldWidget(
                       question: currentQuestion.question,
                       properties: currentQuestion.defaultProperties,
-
                     );
                   case "closed":
-                    return ClosedFieldWidget(
-                      question: currentQuestion.question,
-                      properties: currentQuestion.defaultProperties,
-                      dropdownProperties: currentQuestion.dropdownProperties,
+                    // return ClosedFieldWidget(
+
+                    //   question: currentQuestion.question,
+                    //   properties: currentQuestion.defaultProperties,
+                    //   dropdownProperties: currentQuestion.dropdownProperties,
+                    // );
+                    return Text(
+                      "DROP DOWN NEEDS FORM",
+                      style: TextStyle(color: Colors.red),
                     );
                   case "closed_multiple":
                     return ClosedMultipleFieldWidget(
@@ -503,6 +500,10 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
                     );
                   case "switch":
                     return SwitchFieldWidget(
+                      curentSection: SectionModel(
+                          sectionId: "",
+                          questions: [],
+                          sectionDependentQuestions: []),
                       question: currentQuestion.question,
                       properties: currentQuestion.defaultProperties,
                       booleanProperties: currentQuestion.booleanProperties,
@@ -530,9 +531,7 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
               }
             } else {
               return _tabArrows(formKey: formKey);
-
             }
-
           },
         ),
       ),
@@ -545,55 +544,55 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
       children: [
         _currentIndex > 0
             ? Container(
-          width: SizeConfig.screenWidth * 0.4,
-          height: 100,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 0.5 * SizeConfig.blockSizeHorizontal,
-                vertical: 3 * SizeConfig.blockSizeVertical),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Color(0xff0a58ca)),
-              onPressed: _lastTab,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.arrow_back),
-                  SizedBox(
-                    width: 1 * SizeConfig.blockSizeHorizontal,
+                width: SizeConfig.screenWidth * 0.4,
+                height: 100,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 0.5 * SizeConfig.blockSizeHorizontal,
+                      vertical: 3 * SizeConfig.blockSizeVertical),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Color(0xff0a58ca)),
+                    onPressed: _lastTab,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_back),
+                        SizedBox(
+                          width: 1 * SizeConfig.blockSizeHorizontal,
+                        ),
+                        Text(" Atras"),
+                      ],
+                    ),
                   ),
-                  Text(" Atras"),
-                ],
-              ),
-            ),
-          ),
-        )
+                ),
+              )
             : Container(),
-        _currentIndex  < 3
+        _currentIndex < 3
             ? Container(
-          width: SizeConfig.screenWidth * 0.4,
-          height: 100,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 0.5 * SizeConfig.blockSizeHorizontal,
-                vertical: 3 * SizeConfig.blockSizeVertical),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Color(0xff0a58ca)),
-              onPressed: () {
-                _nextTab(formKey);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Siguiente "),
-                  SizedBox(
-                    width: 1 * SizeConfig.blockSizeHorizontal,
+                width: SizeConfig.screenWidth * 0.4,
+                height: 100,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 0.5 * SizeConfig.blockSizeHorizontal,
+                      vertical: 3 * SizeConfig.blockSizeVertical),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Color(0xff0a58ca)),
+                    onPressed: () {
+                      _nextTab(formKey);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Siguiente "),
+                        SizedBox(
+                          width: 1 * SizeConfig.blockSizeHorizontal,
+                        ),
+                        Icon(Icons.arrow_forward)
+                      ],
+                    ),
                   ),
-                  Icon(Icons.arrow_forward)
-                ],
-              ),
-            ),
-          ),
-        )
+                ),
+              )
             : Container()
       ],
     );
@@ -609,7 +608,7 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
             vertical: 3 * SizeConfig.blockSizeVertical),
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(primary: Color(0xff0a58ca)),
-            onPressed:_sendToSigi,
+            onPressed: _sendToSigi,
             child: Text("Enviar a SIGI")),
       ),
     );
@@ -644,8 +643,6 @@ class _CaseProcessingAddState extends State<CaseProcessingAdd> {
       ),
     );
   }
-
-
 }
 
 class KeepAlivePage extends StatefulWidget {

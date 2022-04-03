@@ -1,4 +1,3 @@
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -6,16 +5,19 @@ import 'package:sat/src/providers/case_processing.dart';
 import 'package:sat/src/services/case_processing.dart';
 import 'package:sat/src/services/save_locally.dart';
 import 'package:sat/src/utilities/screenSize.dart';
-import 'package:sat/src/views/form/form.dart';
-
+import 'package:sat/src/views/form/formv1.dart';
 import '../../../models/form/form_v1.dart';
-
 
 class AddInvolvedView extends StatefulWidget {
   final int caseId;
   final int formId;
   final bool enabled;
-  const AddInvolvedView({Key? key,required this.caseId,required this.formId, this.enabled = true }) : super(key: key);
+  const AddInvolvedView(
+      {Key? key,
+      required this.caseId,
+      required this.formId,
+      this.enabled = true})
+      : super(key: key);
   @override
   _AddInvolvedViewState createState() => _AddInvolvedViewState();
 }
@@ -27,35 +29,32 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
   FormModel? form;
   final _formKey = GlobalKey<FormBuilderState>();
 
-
   _getForm() async {
     setState(() {
       loading = true;
       error = false;
     });
 
-    if(widget.caseId == null){
+    if (widget.caseId == null) {
       this.form = await CaseProcessingService().getInvolvedFormToFill();
-
     } else {
-      this.form = FormModel.fromJson(await SaveLocallyService().readFromLocal(fileName: "form-${widget.caseId}"));
+      this.form = FormModel.fromJson(await SaveLocallyService()
+          .readFromLocal(fileName: "form-${widget.caseId}"));
     }
 
-    if(this.form == null){
+    if (this.form == null) {
       setState(() {
         error = true;
       });
     }
-
 
     setState(() {
       loading = false;
     });
   }
 
-
-  bool _validate (){
-    if(_formKey.currentState?.validate() == true){
+  bool _validate() {
+    if (_formKey.currentState?.validate() == true) {
       _formKey.currentState?.saveAndValidate();
       return true;
     } else {
@@ -64,7 +63,7 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
     }
   }
 
-  invalidForm(){
+  invalidForm() {
     AwesomeDialog(
         isDense: true,
         context: context,
@@ -74,18 +73,18 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
         title: "SAT PDDH",
         desc: "Algunos campos de este formulario son obligatorios.",
         btnOkOnPress: () {},
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
-  involvedCreated(){
+  involvedCreated() {
     AwesomeDialog(
-      dismissOnTouchOutside: false,
+        dismissOnTouchOutside: false,
         dismissOnBackKeyPress: false,
-       onDissmissCallback: (val){
-         Navigator.pushReplacementNamed(context, "/addCaseProcessing", arguments: widget.formId);
-
-       },
+        onDissmissCallback: (val) {
+          Navigator.pushReplacementNamed(context, "/addCaseProcessing",
+              arguments: widget.formId);
+        },
         isDense: true,
         context: context,
         dialogType: DialogType.SUCCES,
@@ -94,11 +93,11 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
         title: "SAT PDDH",
         desc: "Listo !",
         btnOkOnPress: () {},
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
-  errorCreatingInvolved(){
+  errorCreatingInvolved() {
     AwesomeDialog(
         isDense: true,
         context: context,
@@ -106,17 +105,19 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
         padding: EdgeInsets.all(20.0),
         animType: AnimType.BOTTOMSLIDE,
         title: "SAT PDDH",
-        desc: "Lo sentimos ha ocurrido un error al intentar agregar el involucrado.",
+        desc:
+            "Lo sentimos ha ocurrido un error al intentar agregar el involucrado.",
         btnOkOnPress: () {},
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   void _createInvolved() async {
-    if(_validate()){
-      String listName = 'case_involved_'+widget.formId.toString();
-      int? uploadedForm = await CaseProcessingProvider().saveToLocal(listName: listName ,form: form!, context: context);
-      if(uploadedForm != null){
+    if (_validate()) {
+      String listName = 'case_involved_' + widget.formId.toString();
+      int? uploadedForm = await CaseProcessingProvider()
+          .saveToLocal(listName: listName, form: form!, context: context);
+      if (uploadedForm != null) {
         involvedCreated();
       } else {
         errorCreatingInvolved();
@@ -125,7 +126,7 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
   }
 
   void _back() {
-    if(widget.enabled){
+    if (widget.enabled) {
       AwesomeDialog(
           isDense: true,
           context: context,
@@ -137,22 +138,19 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
           btnOkText: "Si",
           btnCancelText: "No",
           btnOkOnPress: () {
-            Navigator.pushReplacementNamed(context, "/addCaseProcessing", arguments: widget.formId);
-
+            Navigator.pushReplacementNamed(context, "/addCaseProcessing",
+                arguments: widget.formId);
           },
-          btnCancelOnPress: (){
+          btnCancelOnPress: () {
             return;
           },
-          btnOkColor: Color(0xFFF2B10F)
-      )..show();
+          btnOkColor: Color(0xFFF2B10F))
+        ..show();
     } else {
-      Navigator.pushReplacementNamed(context, "/showCaseProcessing", arguments: widget.formId);
-
+      Navigator.pushReplacementNamed(context, "/showCaseProcessing",
+          arguments: widget.formId);
     }
-
   }
-
-
 
   @override
   void initState() {
@@ -190,20 +188,24 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
         ),
         body: !loading && !error
             ? SingleChildScrollView(
-              physics: ScrollPhysics(),
-              child: Center(child:_form()),
-            )
+                physics: ScrollPhysics(),
+                child: Center(child: _form()),
+              )
             : !error
-            ? _loading()
-            : _error(),
+                ? _loading()
+                : _error(),
       ),
     );
   }
 
-  Widget _form(){
+  Widget _form() {
     return Column(
       children: [
-        FormWidget(enabled: widget.enabled ? !added  : false, formKey: _formKey,form: form!,),
+        FormWidget(
+          enabled: widget.enabled ? !added : false,
+          formKey: _formKey,
+          form: form!,
+        ),
         widget.enabled && !added ? _submitButton() : Container()
       ],
     );
@@ -264,5 +266,4 @@ class _AddInvolvedViewState extends State<AddInvolvedView> {
       ),
     );
   }
-
 }

@@ -35,8 +35,8 @@ class ApiProvider with ChangeNotifier {
       _url = "http://8.6.193.79:3000/api";
       _bucketUrl = "http://8.6.193.79:3000";
     } else if (environment == Environment.LOCAL) {
-      _url = "http://7658-190-87-162-35.ngrok.io/api";
-      _bucketUrl = "http://7658-190-87-162-35.ngrok.io";
+      _url = "https://91aa-190-87-162-35.ngrok.io/api";
+      _bucketUrl = "https://91aa-190-87-162-35.ngrok.io";
     }
 
     notifyListeners();
@@ -50,13 +50,13 @@ class ApiProvider with ChangeNotifier {
   }
 
   Future<Response?> makeRequest(
-      { required MethodType type,
-        required String endPoint,
+      {required MethodType type,
+      required String endPoint,
       Map<String, dynamic>? queryParams,
       Map<String, dynamic>? body,
       FormData? formData,
       int? okCode,
-        BuildContext? context,
+      BuildContext? context,
       Function? onNetworkNonReachable}) async {
     log(_url + endPoint);
     EasyLoading.show(status: 'Cargando...');
@@ -68,22 +68,23 @@ class ApiProvider with ChangeNotifier {
       Response response;
       switch (type) {
         case MethodType.GET:
-           response = await _dio.get(_url + endPoint,
+          response = await _dio.get(_url + endPoint,
               options: Options(
                 headers: {"Authorization": token},
                 contentType: "application/json",
-              ), queryParameters: queryParams);
+              ),
+              queryParameters: queryParams);
           break;
-          case MethodType.POST:
-           response = await _dio.post(_url + endPoint,
+        case MethodType.POST:
+          response = await _dio.post(_url + endPoint,
               data: body,
               options: Options(
                 headers: {"Authorization": token},
                 contentType: "application/json",
               ));
-           break;
-          case MethodType.PUT:
-           response = await _dio.put(_url + endPoint,
+          break;
+        case MethodType.PUT:
+          response = await _dio.put(_url + endPoint,
               data: body,
               options: Options(
                 headers: {"Authorization": token},
@@ -91,21 +92,21 @@ class ApiProvider with ChangeNotifier {
               ));
 
           break;
-          case MethodType.DELETE:
-           response = await _dio.delete(_url + endPoint,
+        case MethodType.DELETE:
+          response = await _dio.delete(_url + endPoint,
               options: Options(
                 headers: {"Authorization": token},
                 contentType: "application/json",
               ));
           break;
-          case MethodType.MULTIPART:
-           response = await _dio.post(_url + endPoint,
+        case MethodType.MULTIPART:
+          response = await _dio.post(_url + endPoint,
               data: formData,
               options: Options(
                   headers: {"Authorization": token},
                   contentType: "application/json"));
 
-         break;
+          break;
       }
 
       EasyLoading.dismiss();
@@ -126,32 +127,30 @@ class ApiProvider with ChangeNotifier {
       if (e.response != null) {
         log(e.response?.data.toString() ?? "");
         notifyListeners();
-        handleError(json: e.response?.data , context: context);
+        handleError(json: e.response?.data, context: context);
       } else {
         notifyListeners();
         handleError(context: context);
       }
 
       return null;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log('Not Dio Error: $e, stacktrace: $stacktrace');
       EasyLoading.dismiss();
       return null;
     }
   }
 
-   handleError(
-      {  var json, BuildContext? context}) {
+  handleError({var json, BuildContext? context}) {
     notifyListeners();
 
     try {
-
       SnackBar snackBar;
       String? title = "Unhandled error";
       String? detail = json is String ? json : "";
 
-      if(json != null && json is Map<String,dynamic>){
-        ErrorResponseModel error =  ErrorResponseModel.fromJson(json);
+      if (json != null && json is Map<String, dynamic>) {
+        ErrorResponseModel error = ErrorResponseModel.fromJson(json);
         title = error.title;
         detail = error.detail;
       }
@@ -162,7 +161,7 @@ class ApiProvider with ChangeNotifier {
         margin: const EdgeInsets.all(20),
         behavior: SnackBarBehavior.floating,
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         content: ListTile(
           title: Text(title ?? ""),
           subtitle: Text(detail ?? ""),
@@ -173,14 +172,11 @@ class ApiProvider with ChangeNotifier {
         ),
         duration: const Duration(seconds: 3),
       );
-      if(context != null){
+      if (context != null) {
         return ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
       }
-
     } catch (e, stacktrace) {
       log('Not Dio Error: $e, stacktrace: $stacktrace');
-
     }
     EasyLoading.dismiss();
   }

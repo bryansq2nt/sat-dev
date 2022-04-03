@@ -1,4 +1,3 @@
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -12,8 +11,12 @@ class SearchableDropdownFieldCaseProcessing extends StatefulWidget {
   final QuestionModel question;
   final DefaultQuestionProperties properties;
   final DropDownQuestionProperties dropdownProperties;
-  const SearchableDropdownFieldCaseProcessing({Key? key, required this.question,required this.properties,required this.dropdownProperties}) : super(key: key);
-
+  const SearchableDropdownFieldCaseProcessing(
+      {Key? key,
+      required this.question,
+      required this.properties,
+      required this.dropdownProperties})
+      : super(key: key);
 
   @override
   _SearchableDropdownFieldCaseProcessingState createState() =>
@@ -26,7 +29,8 @@ class _SearchableDropdownFieldCaseProcessingState
 
   void formatAnswer() {
     if (widget.properties.answer != null) {
-      widget.properties.answer = widget.properties.answer.toString().split("|")[0];
+      widget.properties.answer =
+          widget.properties.answer.toString().split("|")[0];
     }
   }
 
@@ -71,7 +75,8 @@ class _SearchableDropdownFieldCaseProcessingState
           DropdownSearch<String>(
             mode: Mode.MENU,
             enabled: widget.properties.enabled,
-            items: widget.dropdownProperties.answersToShow.map((e) => e.answer).toList(),
+            items:
+                widget.dropdownProperties.answers.map((e) => e.answer).toList(),
             selectedItem: widget.properties.answer,
             validator: widget.properties.required
                 ? FormBuilderValidators.required(

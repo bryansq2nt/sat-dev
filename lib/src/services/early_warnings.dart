@@ -10,8 +10,7 @@ import 'package:sat/src/services/save_locally.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EarlyWarningsService {
-
-  Future<List<FormModel>?> getForms({int offset = 0}) async {
+  Future<List<FormModel>> getForms({int offset = 0}) async {
     try {
       Response? response = await ApiProvider().makeRequest(
           type: MethodType.GET,
@@ -20,40 +19,38 @@ class EarlyWarningsService {
           okCode: 200);
       return List<FormModel>.from(
           response?.data['earlyAlerts'].map((e) => FormModel.fromJson(e)));
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("$e $stacktrace");
-      return null;
+      return [];
     }
   }
 
-  Future<List<FormModel>?> getLocallyForms() async {
+  Future<List<FormModel>> getLocallyForms() async {
     try {
       List<FormModel>? list =
           await SaveLocallyService().getLocallyList('early_warnings');
-      return list;
-    } catch (e,stacktrace) {
+      return list ?? [];
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
-      return null;
+      return [];
     }
   }
 
   Future<FormModel?> getFormToFill({BuildContext? context}) async {
     try {
-
       bool currentFormUpdated = await checkFormVersion();
-      if(!currentFormUpdated){
+      if (!currentFormUpdated) {
         return await getNewForm();
       }
 
       FormModel? currentForm = await getCurrentForm();
 
-      if(currentForm != null){
+      if (currentForm != null) {
         return currentForm;
       }
 
       return await getNewForm();
-
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -61,19 +58,15 @@ class EarlyWarningsService {
 
   Future<FormModel?> getNewForm() async {
     try {
-
       Response? response = await ApiProvider().makeRequest(
-          type: MethodType.GET,
-          endPoint: '/alerts/form/empty',
-          okCode: 200);
+          type: MethodType.GET, endPoint: '/alerts/form/empty', okCode: 200);
 
       FormModel formModel = FormModel.fromJson(response?.data['form']);
 
-
-      await SaveLocallyService().writeToLocal(fileName: "earlyWarningForm", content: response?.data['form']);
+      await SaveLocallyService().writeToLocal(
+          fileName: "earlyWarningForm", content: response?.data['form']);
       return formModel;
-
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -87,7 +80,7 @@ class EarlyWarningsService {
       FormModel formModel = FormModel.fromJson(response?.data['form']);
 
       return formModel;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -101,25 +94,26 @@ class EarlyWarningsService {
       FormModel formModel = FormModel.fromJson(json);
       int sections = 0;
       sections = formModel.sections.length;
-    
-      for(int i = 0; i < sections; i++){
+
+      for (int i = 0; i < sections; i++) {
         int questions = 0;
         questions = formModel.sections[i].questions.length;
-        
 
-        for(int j = 0; j < questions; j++){
-          formModel.sections[i].questions[j]!.answers = formModel.sections[i].questions[j]!.answers;
+        for (int j = 0; j < questions; j++) {
+          formModel.sections[i].questions[j]!.answers =
+              formModel.sections[i].questions[j]!.answers;
         }
       }
 
       return formModel;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
   }
 
-  Future<FormModel?> getFormToAnalyze({int? formId, BuildContext? context}) async {
+  Future<FormModel?> getFormToAnalyze(
+      {int? formId, BuildContext? context}) async {
     try {
       Response? response = await ApiProvider().makeRequest(
           type: MethodType.GET,
@@ -131,18 +125,18 @@ class EarlyWarningsService {
 
       int sections = 0;
       sections = formModel.sections.length;
-    
-      for(int i = 0; i < sections; i++){
+
+      for (int i = 0; i < sections; i++) {
         int questions = 0;
         questions = formModel.sections[i].questions.length;
-        
 
-        for(int j = 0; j < questions; j++){
-          formModel.sections[i].questions[j]!.answers = formModel.sections[i].questions[j]!.answers;
+        for (int j = 0; j < questions; j++) {
+          formModel.sections[i].questions[j]!.answers =
+              formModel.sections[i].questions[j]!.answers;
         }
       }
       return formModel;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -206,7 +200,7 @@ class EarlyWarningsService {
         return form;
       }
       return null;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -223,7 +217,7 @@ class EarlyWarningsService {
         if (currentForm.isUpdate && form != null) {
           temp = await updateForm(form: form, context: context);
         } else {
-          if(form != null){
+          if (form != null) {
             temp = await uploadForm(form: form, context: context);
           }
         }
@@ -248,7 +242,7 @@ class EarlyWarningsService {
   Future<FormModel?> updateForm(
       {required FormModel form,
       BuildContext? context,
-        Function? onNetworkNotReachable}) async {
+      Function? onNetworkNotReachable}) async {
     try {
       Map<String, dynamic> _form = {};
 
@@ -280,7 +274,8 @@ class EarlyWarningsService {
               form.sections[i].questions[j].questionType ==
                   'date_time_before' ||
               form.sections[i].questions[j].questionType == 'date_after' ||
-              form.sections[i].questions[j].questionType == 'date_time' || form.sections[i].questions[j].questionType == 'date_before') {
+              form.sections[i].questions[j].questionType == 'date_time' ||
+              form.sections[i].questions[j].questionType == 'date_before') {
             form.sections[i].questions[j].answer =
                 form.sections[i].questions[j].answer != null &&
                         form.sections[i].questions[j].answer != "null"
@@ -319,13 +314,14 @@ class EarlyWarningsService {
         return form;
       }
       return null;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
   }
 
-  Future<bool> analyzeForm({required FormModel form, BuildContext? context}) async {
+  Future<bool> analyzeForm(
+      {required FormModel form, BuildContext? context}) async {
     try {
       Map<String, dynamic> _form = {};
 
@@ -393,7 +389,7 @@ class EarlyWarningsService {
       List<FormModel> _forms = List<FormModel>.from(
           response?.data['earlyAlerts'].map((x) => FormModel.fromJson(x)));
       return _forms;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -407,13 +403,14 @@ class EarlyWarningsService {
           okCode: 200);
       return List<FormModel>.from(
           response?.data['related_cases'].map((e) => FormModel.fromJson(e)));
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
   }
 
-  Future<bool> removeRelatedForm({required int fatherId,required int childId}) async {
+  Future<bool> removeRelatedForm(
+      {required int fatherId, required int childId}) async {
     try {
       Response? response = await ApiProvider().makeRequest(
           type: MethodType.DELETE,
@@ -431,7 +428,8 @@ class EarlyWarningsService {
     }
   }
 
-  Future<bool> addToRelatedForms({required int fatherId,required int childId}) async {
+  Future<bool> addToRelatedForms(
+      {required int fatherId, required int childId}) async {
     try {
       Response? response = await ApiProvider().makeRequest(
           type: MethodType.PUT,
@@ -450,7 +448,7 @@ class EarlyWarningsService {
   }
 
   Future<List<FormModel>?> searchRelatedForm(
-      {required int fatherId,required String delegate}) async {
+      {required int fatherId, required String delegate}) async {
     try {
       Response? response = await ApiProvider().makeRequest(
         type: MethodType.GET,
@@ -461,7 +459,7 @@ class EarlyWarningsService {
       List<FormModel> _forms = List<FormModel>.from(
           response?.data['earlyAlerts'].map((x) => FormModel.fromJson(x)));
       return _forms;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
@@ -487,43 +485,39 @@ class EarlyWarningsService {
 
   Future<FormModel?> getCurrentForm() async {
     try {
-      Map<String, dynamic> json =
-      await SaveLocallyService().readFromLocal(fileName: "earlyWarningForm");
+      Map<String, dynamic> json = await SaveLocallyService()
+          .readFromLocal(fileName: "earlyWarningForm");
       FormModel formModel = FormModel.fromJson(json);
-     
+
       return formModel;
-    } catch (e,stacktrace) {
+    } catch (e, stacktrace) {
       log("${e.toString()} $stacktrace");
       return null;
     }
   }
 
   Future<bool> checkFormVersion() async {
-
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       double currentVersion = prefs.getDouble("earlyWarningFormVersion") ?? 0.0;
       Response? response = await ApiProvider().makeRequest(
           type: MethodType.GET, endPoint: '/forms/alerts/version', okCode: 200);
 
-
-      if(response == null){
-       return true;
+      if (response == null) {
+        return true;
       }
 
       double serverVersion = double.parse(response.data['version'].toString());
 
-      if( serverVersion == currentVersion){
+      if (serverVersion == currentVersion) {
         return true;
       }
 
       prefs.setDouble("earlyWarningFormVersion", serverVersion);
       return false;
-
-    } catch (e){
+    } catch (e) {
       log(e.toString());
       return false;
     }
   }
-
 }

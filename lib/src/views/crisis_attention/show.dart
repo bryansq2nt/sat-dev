@@ -5,32 +5,33 @@ import 'package:sat/src/utilities/screenSize.dart';
 import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/views/home/components/bottom_bar.dart';
 
-import '../form/form.dart';
+import 'package:sat/src/views/form/formv1.dart';
 
 class ShowCrisisAttentionView extends StatefulWidget {
   final FormModel form;
 
-  const ShowCrisisAttentionView({Key? key,required this.form}) : super(key: key);
+  const ShowCrisisAttentionView({Key? key, required this.form})
+      : super(key: key);
 
   @override
-  _ShowCrisisAttentionViewState createState() => _ShowCrisisAttentionViewState();
+  _ShowCrisisAttentionViewState createState() =>
+      _ShowCrisisAttentionViewState();
 }
 
 class _ShowCrisisAttentionViewState extends State<ShowCrisisAttentionView> {
-
   bool loading = true;
   bool error = false;
   FormModel? form;
   final _formKey = GlobalKey<FormBuilderState>();
-
 
   _getForm() async {
     setState(() {
       loading = true;
       error = false;
     });
-    this.form = await CrisisAttentionService().getForm(formId: widget.form.formId);
-    if(this.form == null){
+    this.form =
+        await CrisisAttentionService().getForm(formId: widget.form.formId);
+    if (this.form == null) {
       setState(() {
         error = true;
       });
@@ -44,10 +45,7 @@ class _ShowCrisisAttentionViewState extends State<ShowCrisisAttentionView> {
   void initState() {
     super.initState();
     _getForm();
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +68,14 @@ class _ShowCrisisAttentionViewState extends State<ShowCrisisAttentionView> {
         ),
       ),
       backgroundColor: const Color(0xFFe2e9fe),
-      body: !loading && !error ? SafeArea(
-          child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Center(child: _form()))) : !error ? _loading() : _error(),
+      body: !loading && !error
+          ? SafeArea(
+              child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Center(child: _form())))
+          : !error
+              ? _loading()
+              : _error(),
       bottomNavigationBar: BottomBarWidget(),
     );
   }
@@ -82,27 +84,36 @@ class _ShowCrisisAttentionViewState extends State<ShowCrisisAttentionView> {
     return Container(
       child: Column(
         children: [
-          FormWidget(formKey: _formKey,form: form!,enabled: false,),
+          FormWidget(
+            formKey: _formKey,
+            form: form!,
+            enabled: false,
+          ),
         ],
       ),
     );
   }
 
-
-  Widget _loading (){
+  Widget _loading() {
     return Center(
       child: CircularProgressIndicator(),
     );
   }
 
-  Widget _error(){
+  Widget _error() {
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5 * SizeConfig.blockSizeHorizontal),
+        padding: EdgeInsets.symmetric(
+            horizontal: 5 * SizeConfig.blockSizeHorizontal),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Lo sentimos ha ocurrido un error al intentar obtener el formulario", style: TextStyle(fontWeight: FontWeight.bold,color: Color(0xff1f0757)),textAlign: TextAlign.center,),
+            Text(
+              "Lo sentimos ha ocurrido un error al intentar obtener el formulario",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Color(0xff1f0757)),
+              textAlign: TextAlign.center,
+            ),
             IconButton(
               icon: Icon(Icons.autorenew),
               onPressed: _getForm,
@@ -112,7 +123,4 @@ class _ShowCrisisAttentionViewState extends State<ShowCrisisAttentionView> {
       ),
     );
   }
-
 }
-
-

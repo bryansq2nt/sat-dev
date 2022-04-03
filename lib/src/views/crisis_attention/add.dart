@@ -4,7 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/services/crisis_attention.dart';
 import 'package:sat/src/utilities/screenSize.dart';
-import 'package:sat/src/views/form/form.dart';
+import 'package:sat/src/views/form/formv1.dart';
 import 'package:sat/src/views/home/components/bottom_bar.dart';
 
 import '../../providers/crisis_attention.dart';
@@ -73,7 +73,9 @@ class _AddCrisisAttentionWarningViewState
         animType: AnimType.BOTTOMSLIDE,
         title: "SAT PDDH",
         desc: "Formulario guardado correctamente",
-        btnOkOnPress: () {Navigator.pop(context, added);},
+        btnOkOnPress: () {
+          Navigator.pop(context, added);
+        },
         btnOkColor: Color(0xFFF2B10F))
       ..show();
   }
@@ -154,11 +156,11 @@ class _AddCrisisAttentionWarningViewState
         btnOkOnPress: () {
           Navigator.pop(context, added);
         },
-        btnCancelOnPress: (){
+        btnCancelOnPress: () {
           return;
         },
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   @override
@@ -187,7 +189,7 @@ class _AddCrisisAttentionWarningViewState
               Icons.arrow_back,
               color: Color(0xff0a58ca),
             ),
-            onPressed:_back,
+            onPressed: _back,
           ),
         ),
         backgroundColor: Color(0xFFe2e9fe),
@@ -239,7 +241,6 @@ class _AddCrisisAttentionWarningViewState
       child: Column(
         children: [
           FormWidget(
-
             formKey: _formKey,
             form: form!,
             enabled: !added,

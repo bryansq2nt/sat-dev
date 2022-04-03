@@ -9,13 +9,14 @@ import 'package:sat/src/utilities/screenSize.dart';
 import 'package:sat/src/views/home/components/bottom_bar.dart';
 
 import '../../providers/crisis_attention.dart';
-import '../form/form.dart';
+import 'package:sat/src/views/form/formv1.dart';
 
 class ModifyCrisisAttentionView extends StatefulWidget {
   final FormModel form;
   final bool isLocal;
 
-  const ModifyCrisisAttentionView({Key? key,required this.form, this.isLocal = false})
+  const ModifyCrisisAttentionView(
+      {Key? key, required this.form, this.isLocal = false})
       : super(key: key);
 
   @override
@@ -144,13 +145,11 @@ class _ModifyCrisisAttentionViewState extends State<ModifyCrisisAttentionView> {
             }
           }
         },
-        btnCancelOnPress: (){
+        btnCancelOnPress: () {
           return;
         },
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
-
-
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   void _updateForm() async {
@@ -211,13 +210,13 @@ class _ModifyCrisisAttentionViewState extends State<ModifyCrisisAttentionView> {
         btnOkText: "Si",
         btnCancelText: "No",
         btnOkOnPress: () {
-          Navigator.pop(context,this.form?.sentToAnalyze);
+          Navigator.pop(context, this.form?.sentToAnalyze);
         },
-        btnCancelOnPress: (){
+        btnCancelOnPress: () {
           return;
         },
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   @override
@@ -267,7 +266,9 @@ class _ModifyCrisisAttentionViewState extends State<ModifyCrisisAttentionView> {
             enabled: !form!.sentToAnalyze,
           ),
           !form!.sentToAnalyze ? _submitButton() : Container(),
-          !form!.sentToAnalyze && !widget.isLocal ? _sendToAnalyze() : Container()
+          !form!.sentToAnalyze && !widget.isLocal
+              ? _sendToAnalyze()
+              : Container()
         ],
       ),
     );

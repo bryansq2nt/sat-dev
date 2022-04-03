@@ -7,19 +7,21 @@ import 'package:sat/src/models/user.dart';
 import 'package:sat/src/providers/auth.dart';
 import 'package:sat/src/services/crisis_attention.dart';
 import 'package:sat/src/utilities/screenSize.dart';
-import 'package:sat/src/views/form/form.dart';
+import 'package:sat/src/views/form/formv1.dart';
 import 'package:sat/src/views/home/components/bottom_bar.dart';
 
 class AnalyzeCrisisAttentionView extends StatefulWidget {
   final int formId;
 
-  const AnalyzeCrisisAttentionView({Key? key,required this.formId}) : super(key: key);
+  const AnalyzeCrisisAttentionView({Key? key, required this.formId})
+      : super(key: key);
   @override
-  _AnalyzeCrisisAttentionViewState createState() => _AnalyzeCrisisAttentionViewState();
+  _AnalyzeCrisisAttentionViewState createState() =>
+      _AnalyzeCrisisAttentionViewState();
 }
 
-class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView> {
-
+class _AnalyzeCrisisAttentionViewState
+    extends State<AnalyzeCrisisAttentionView> {
   bool analyzing = false;
   bool analyzed = false;
   bool wasAnalyzed = false;
@@ -28,15 +30,15 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
   FormModel? form;
   final _formKey = GlobalKey<FormBuilderState>();
 
-
   _getForm() async {
     setState(() {
       loading = true;
       error = false;
     });
-    this.form = await CrisisAttentionService().getFormToAnalyze(formId: widget.formId, context: context);
+    this.form = await CrisisAttentionService()
+        .getFormToAnalyze(formId: widget.formId, context: context);
     this.analyzed = this.form != null ? this.form!.analyzed : false;
-    if(this.form == null){
+    if (this.form == null) {
       setState(() {
         error = true;
       });
@@ -46,8 +48,8 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
     });
   }
 
-  bool _validate (){
-    if(_formKey.currentState?.validate() == true){
+  bool _validate() {
+    if (_formKey.currentState?.validate() == true) {
       _formKey.currentState?.saveAndValidate();
       return true;
     } else {
@@ -55,15 +57,13 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
     }
   }
 
-
   @override
   void initState() {
     super.initState();
     _getForm();
-
   }
 
-  invalidForm(){
+  invalidForm() {
     AwesomeDialog(
         isDense: true,
         context: context,
@@ -73,17 +73,16 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
         title: "SAT PDDH",
         desc: "Algunos campos de este formulario son obligatorios.",
         btnOkOnPress: () {},
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
-  formAnalyzed(){
+  formAnalyzed() {
     setState(() {
       analyzed = true;
       wasAnalyzed = true;
     });
     AwesomeDialog(
-
         isDense: true,
         context: context,
         dialogType: DialogType.SUCCES,
@@ -92,11 +91,11 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
         title: "SAT PDDH",
         desc: "Formulario analizado correctamente",
         btnOkOnPress: () {},
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
-  errorAnalysingForm(){
+  errorAnalysingForm() {
     AwesomeDialog(
         isDense: true,
         context: context,
@@ -104,24 +103,24 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
         padding: EdgeInsets.all(20.0),
         animType: AnimType.BOTTOMSLIDE,
         title: "SAT PDDH",
-        desc: "Lo sentimos ha ocurrido un error al intentar analizar el formulario.",
+        desc:
+            "Lo sentimos ha ocurrido un error al intentar analizar el formulario.",
         btnOkOnPress: () {},
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   void _analyzeForm() async {
-
-    if(_validate() && !analyzing){
+    if (_validate() && !analyzing) {
       setState(() {
         analyzing = true;
       });
-      bool analyzed = await CrisisAttentionService().analyzeForm(form: form!, context: context);
+      bool analyzed = await CrisisAttentionService()
+          .analyzeForm(form: form!, context: context);
       setState(() {
         analyzing = false;
       });
-      if(analyzed){
-
+      if (analyzed) {
         formAnalyzed();
       } else {
         errorAnalysingForm();
@@ -131,14 +130,14 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final List<Role> _roles = Provider.of<AuthProvider>(context).user?.roles ?? [];
+    final List<Role> _roles =
+        Provider.of<AuthProvider>(context).user?.roles ?? [];
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context,wasAnalyzed);
+        Navigator.pop(context, wasAnalyzed);
         return true;
       },
       child: Scaffold(
@@ -155,45 +154,61 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
               color: Color(0xff0a58ca),
             ),
             onPressed: () {
-              Navigator.pop(context,wasAnalyzed);
+              Navigator.pop(context, wasAnalyzed);
             },
           ),
           actions: [
-            _roles.singleWhere((element) => element.roleId == 3 || element.roleId == 4) != null && analyzed
+            _roles.singleWhere((element) =>
+                            element.roleId == 3 || element.roleId == 4) !=
+                        null &&
+                    analyzed
                 ? IconButton(
-              icon: Icon(Icons.link, color: Color(0xff0a58ca),),
-              onPressed:  ()  async {
-                Navigator.pushNamed(context, '/relatedCrisisAttention', arguments: this.form!.formId);
-
-              },
-            )
+                    icon: Icon(
+                      Icons.link,
+                      color: Color(0xff0a58ca),
+                    ),
+                    onPressed: () async {
+                      Navigator.pushNamed(context, '/relatedCrisisAttention',
+                          arguments: this.form!.formId);
+                    },
+                  )
                 : Container()
           ],
         ),
         backgroundColor: Color(0xFFe2e9fe),
-        body: !loading && !error ? SafeArea(
-            child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Center(child: _form()))) : !error ? _loading() : _error(),
+        body: !loading && !error
+            ? SafeArea(
+                child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Center(child: _form())))
+            : !error
+                ? _loading()
+                : _error(),
         bottomNavigationBar: BottomBarWidget(),
       ),
     );
   }
 
-  Widget _loading (){
+  Widget _loading() {
     return Center(
       child: CircularProgressIndicator(),
     );
   }
 
-  Widget _error(){
+  Widget _error() {
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5 * SizeConfig.blockSizeHorizontal),
+        padding: EdgeInsets.symmetric(
+            horizontal: 5 * SizeConfig.blockSizeHorizontal),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Lo sentimos ha ocurrido un error al intentar obtener el formulario", style: TextStyle(fontWeight: FontWeight.bold,color: Color(0xff1f0757)),textAlign: TextAlign.center,),
+            Text(
+              "Lo sentimos ha ocurrido un error al intentar obtener el formulario",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Color(0xff1f0757)),
+              textAlign: TextAlign.center,
+            ),
             IconButton(
               icon: Icon(Icons.autorenew),
               onPressed: _getForm,
@@ -208,7 +223,11 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
     return Container(
       child: Column(
         children: [
-          FormWidget(formKey: _formKey,form: form!,enabled: !analyzed,),
+          FormWidget(
+            formKey: _formKey,
+            form: form!,
+            enabled: !analyzed,
+          ),
           !analyzed ? _submitButton() : Container()
         ],
       ),
@@ -240,5 +259,4 @@ class _AnalyzeCrisisAttentionViewState extends State<AnalyzeCrisisAttentionView>
       ),
     );
   }
-
 }

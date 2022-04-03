@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/models/form/question_model.dart';
 import 'package:sat/src/models/form/questions/boolean.dart';
 import 'package:sat/src/models/form/questions/date.dart';
 import 'package:sat/src/models/form/questions/dropdown.dart';
 import 'package:sat/src/models/form/questions/image.dart';
 import 'package:sat/src/models/form/questions/numeric.dart';
+import 'package:sat/src/models/form/section_model.dart';
 import 'package:sat/src/views/form/closed.dart';
 import 'package:sat/src/views/form/date.dart';
 import 'package:sat/src/views/form/image.dart';
@@ -18,8 +20,12 @@ import '../open.dart';
 import '../switch.dart';
 
 class QuestionBody extends StatelessWidget {
+  final FormModel form;
   final dynamic question;
-  const QuestionBody({Key? key, this.question}) : super(key: key);
+  final SectionModel section;
+  const QuestionBody(
+      {Key? key, this.question, required this.section, required this.form})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +33,7 @@ class QuestionBody extends StatelessWidget {
       case QuestionTypes.boolean:
         BooleanQuestion currentQuestion = question;
         return SwitchFieldWidget(
+          curentSection: section,
           question: currentQuestion.question,
           properties: currentQuestion.defaultProperties,
           booleanProperties: currentQuestion.booleanProperties,
@@ -34,26 +41,29 @@ class QuestionBody extends StatelessWidget {
       case QuestionTypes.date:
         DateQuestion currentQuestion = question;
         return QuestionWidgetV1(
+            curentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: DateFieldWidget(
-              question: currentQuestion.question,
-              properties: currentQuestion.defaultProperties,
-              dateProperties: currentQuestion.dateProperties
-            ));
+                question: currentQuestion.question,
+                properties: currentQuestion.defaultProperties,
+                dateProperties: currentQuestion.dateProperties));
       case QuestionTypes.closed:
         DropDownQuestion currentQuestion = question;
         return QuestionWidgetV1(
+            curentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: ClosedFieldWidget(
+              form: form,
               question: currentQuestion.question,
               properties: currentQuestion.defaultProperties,
               dropdownProperties: currentQuestion.dropdownProperties,
             ));
       case QuestionTypes.image:
-        BooleanQuestion currentQuestion = question;
+        ImageQuestion currentQuestion = question;
         return QuestionWidgetV1(
+            curentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: ImageFieldWidget(
@@ -63,6 +73,7 @@ class QuestionBody extends StatelessWidget {
       case QuestionTypes.numeric:
         NumericQuestion currentQuestion = question;
         return NumericFieldWidget(
+          curentSection: section,
           question: currentQuestion.question,
           properties: currentQuestion.defaultProperties,
           numericProperties: currentQuestion.numericProperties,
@@ -70,6 +81,7 @@ class QuestionBody extends StatelessWidget {
       default:
         TextQuestion currentQuestion = question;
         return QuestionWidgetV1(
+            curentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: OpenFieldWidget(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:sat/src/models/form/section_model.dart';
 import 'package:sat/src/utilities/screenSize.dart';
 
 import '../../models/form/properties/default_question_properties.dart';
@@ -8,12 +9,14 @@ import '../../models/form/properties/numeric_question_properties.dart';
 import '../../models/form/question_model.dart';
 
 class NumericFieldWidget extends StatelessWidget {
+  final SectionModel curentSection;
   final QuestionModel question;
   final DefaultQuestionProperties properties;
   final NumericQuestionProperties numericProperties;
 
   const NumericFieldWidget(
       {Key? key,
+      required this.curentSection,
       required this.question,
       required this.properties,
       required this.numericProperties})
@@ -26,9 +29,10 @@ class NumericFieldWidget extends StatelessWidget {
           context,
           errorText: 'Requerido',
         ),
-        FormBuilderValidators.numeric(context, errorText: 'Este campo debe ser numerico.'),
+        FormBuilderValidators.numeric(context,
+            errorText: 'Este campo debe ser numerico.'),
         FormBuilderValidators.max(context, numericProperties.max!),
-            (val) {
+        (val) {
           var number = int.tryParse(val as String);
           if (number != null && number < numericProperties.min) {
             return 'No puede ser menor a ${numericProperties.min}';
@@ -42,9 +46,10 @@ class NumericFieldWidget extends StatelessWidget {
         context,
         errorText: 'Requerido',
       ),
-      FormBuilderValidators.numeric(context, errorText: 'Este campo debe ser numerico.'),
+      FormBuilderValidators.numeric(context,
+          errorText: 'Este campo debe ser numerico.'),
       FormBuilderValidators.max(context, numericProperties.max!),
-          (val) {
+      (val) {
         var number = int.tryParse(val as String);
         if (number != null && number < numericProperties.min) {
           return 'No puede ser menor a ${numericProperties.min}';

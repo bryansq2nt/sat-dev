@@ -7,14 +7,15 @@ import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/providers/early_warning.dart';
 import 'package:sat/src/services/early_warnings.dart';
 import 'package:sat/src/utilities/screenSize.dart';
-import 'package:sat/src/views/form/form.dart';
+import 'package:sat/src/views/form/formv1.dart';
 import 'package:sat/src/views/home/components/bottom_bar.dart';
 
 class ModifyEarlyWarningView extends StatefulWidget {
   final FormModel form;
   final bool isLocal;
 
-  const ModifyEarlyWarningView({Key? key,required this.form, this.isLocal = false})
+  const ModifyEarlyWarningView(
+      {Key? key, required this.form, this.isLocal = false})
       : super(key: key);
 
   @override
@@ -53,7 +54,7 @@ class _ModifyEarlyWarningViewState extends State<ModifyEarlyWarningView> {
   }
 
   bool _validate() {
-    if (_formKey.currentState?.validate() == true ) {
+    if (_formKey.currentState?.validate() == true) {
       _formKey.currentState?.saveAndValidate();
       return true;
     } else {
@@ -193,13 +194,14 @@ class _ModifyEarlyWarningViewState extends State<ModifyEarlyWarningView> {
         btnOkText: "Si",
         btnCancelText: "No",
         btnOkOnPress: () {
-          Navigator.pop(context, isFalse == null ? this.form?.sentToAnalyze : false);
+          Navigator.pop(
+              context, isFalse == null ? this.form?.sentToAnalyze : false);
         },
-        btnCancelOnPress: (){
+        btnCancelOnPress: () {
           return;
         },
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   @override
@@ -223,9 +225,9 @@ class _ModifyEarlyWarningViewState extends State<ModifyEarlyWarningView> {
               color: Color(0xff0a58ca),
             ),
             onPressed: () {
-              try{
+              try {
                 _back(null);
-              }catch(e){
+              } catch (e) {
                 _back(false);
               }
             },
