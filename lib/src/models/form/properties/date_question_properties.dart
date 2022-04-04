@@ -11,10 +11,10 @@ class DateQuestionProperties {
   final DateTime? min;
   final DateTime current = DateTime.now();
   final DateTime? max;
-  final DateFormat format;
+  final DateFormat? format;
   final DateType type;
 
-  DateQuestionProperties({this.min,this.max,required this.format, required this.type});
+  DateQuestionProperties({this.min,this.max,this.format, required this.type});
 
 
 

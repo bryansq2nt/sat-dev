@@ -14,6 +14,7 @@ class SectionModel extends Dependent {
     this.sectionTitle = "",
     this.boldTitle = false,
     this.dependent = false,
+    this.dependentQuestionId,
     this.dependentSectionId,
     this.dependentMultiple = false,
     required this.questions,
@@ -63,6 +64,8 @@ class SectionModel extends Dependent {
       boldTitle: getBool(json['bold_title']),
       sectionTitle: json['section_title'] ?? "",
       dependent: getBool(json['dependent']),
+      dependentQuestionId: json['dependent_question_id'],
+      dependentSectionId: json['dependent_section_id'],
       sectionDependentAnswer: json['dependent_answer'] != null
           ? DependentAnswerModel.fromJson(json['dependent_answer'])
           : null,

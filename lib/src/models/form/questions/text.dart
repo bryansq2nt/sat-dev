@@ -7,4 +7,6 @@ class TextQuestion {
   final DefaultQuestionProperties defaultProperties;
 
   TextQuestion({required this.question,required this.defaultProperties});
+
+
 }

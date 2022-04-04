@@ -43,7 +43,7 @@ class QuestionBody extends StatelessWidget {
       case QuestionTypes.date:
         DateQuestion currentQuestion = question;
         return QuestionWidgetV1(
-            curentSection: section,
+            currentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: DateFieldWidget(
@@ -53,7 +53,7 @@ class QuestionBody extends StatelessWidget {
       case QuestionTypes.closed:
         DropDownQuestion currentQuestion = question;
         return QuestionWidgetV1(
-            curentSection: section,
+            currentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: ClosedFieldWidget(
@@ -66,7 +66,7 @@ class QuestionBody extends StatelessWidget {
       case QuestionTypes.image:
         ImageQuestion currentQuestion = question;
         return QuestionWidgetV1(
-            curentSection: section,
+            currentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: ImageFieldWidget(
@@ -84,7 +84,7 @@ class QuestionBody extends StatelessWidget {
       default:
         TextQuestion currentQuestion = question;
         return QuestionWidgetV1(
-            curentSection: section,
+            currentSection: section,
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: OpenFieldWidget(

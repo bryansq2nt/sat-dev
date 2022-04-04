@@ -13,7 +13,7 @@ import 'package:sat/src/models/form/section_model.dart';
 import '../../../utilities/screenSize.dart';
 
 class QuestionWidgetV1 extends StatelessWidget {
-  final SectionModel curentSection;
+  final SectionModel currentSection;
   final QuestionModel question;
   final DefaultQuestionProperties properties;
   DateQuestionProperties? dateProperties;
@@ -27,7 +27,7 @@ class QuestionWidgetV1 extends StatelessWidget {
       this.dateProperties,
       this.numericProperties,
       required this.body,
-      required this.curentSection})
+      required this.currentSection})
       : super(key: key);
 
   bool visible = false;
@@ -40,18 +40,15 @@ class QuestionWidgetV1 extends StatelessWidget {
   }
 
   bool checkValidation() {
-    if (question.questionId == "presencia_fuerza_publica" ||
-        question.questionId == "intervencion_fuerza_publica") {
-      log(question.toJson().toString());
-    }
+
     if (question.questionDependentAnswer != null) {
       DefaultQuestionProperties questionToCheck =
           DefaultQuestionProperties(answer: "");
 
-      for (var i = 0; i < curentSection.questions.length; i++) {
-        if (curentSection.questions[i].question.questionId ==
+      for (var i = 0; i < currentSection.questions.length; i++) {
+        if (currentSection.questions[i].question.questionId ==
             question.dependentQuestionId) {
-          questionToCheck = curentSection.questions[i].defaultProperties;
+          questionToCheck = currentSection.questions[i].defaultProperties;
         }
       }
 

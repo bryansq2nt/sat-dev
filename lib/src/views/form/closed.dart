@@ -15,7 +15,7 @@ import '../../models/form/properties/drop_down_properties.dart';
 class ClosedFieldWidget extends StatelessWidget {
   ClosedFieldWidget(
       {Key? key,
-        required this.formKey,
+      required this.formKey,
       required this.form,
       required this.question,
       required this.properties,
@@ -40,19 +40,20 @@ class ClosedFieldWidget extends StatelessWidget {
 
   onChangeValue(val) {
     properties.answer = val;
-    if (dropdownProperties.hasChild) {
-      if (dropdownProperties.principalChild != null) {
-        changeChildAnswers();
-      }
 
+    /*
+    Wwe need to remove principal child object and just add de principal child 
+    to the begin of the children list, to avoid some bug while we try to use dependent dropdowns 
+    */
+
+    if (dropdownProperties.principalChild != null) {
+      changeChildAnswers();
     }
   }
-
 
   changeChildAnswers() {
     String pcQuestionId = dropdownProperties.principalChild!.question;
     String pcSectionId = dropdownProperties.principalChild!.section;
-
 
     for (int i = 0; i < form.sections.length; i++) {
       for (int j = 0; j < form.sections[i].questions.length; j++) {
@@ -63,7 +64,6 @@ class ClosedFieldWidget extends StatelessWidget {
             List<DropDownAnswer> newAnswers = [];
             for (DropDownAnswer answer in form
                 .sections[i].questions[j].dropdownProperties!.allAnswers) {
-
               if (answer.toCompare!.toLowerCase() ==
                   properties.answer?.answerId.toString().toLowerCase()) {
                 newAnswers.add(answer);
@@ -126,7 +126,7 @@ class ClosedFieldWidget extends StatelessWidget {
       );
     }
 
-    if(answer != null){
+    if (answer != null) {
       return FormBuilderDropdown(
         enabled: properties.enabled,
         name: question.questionId,
@@ -145,15 +145,15 @@ class ClosedFieldWidget extends StatelessWidget {
         allowClear: true,
         validator: properties.required
             ? FormBuilderValidators.required(
-          context,
-          errorText: 'Requerido',
-        )
+                context,
+                errorText: 'Requerido',
+              )
             : null,
         onChanged: onChangeValue,
         onSaved: (val) => properties.answer = val,
         items: answers
             .map((value) => DropdownMenuItem<DropDownAnswer>(
-            value: value, child: Text(value.answer)))
+                value: value, child: Text(value.answer)))
             .toList(),
       );
     }
@@ -175,17 +175,16 @@ class ClosedFieldWidget extends StatelessWidget {
       allowClear: true,
       validator: properties.required
           ? FormBuilderValidators.required(
-        context,
-        errorText: 'Requerido',
-      )
+              context,
+              errorText: 'Requerido',
+            )
           : null,
       onChanged: onChangeValue,
       onSaved: (val) => properties.answer = val,
       items: answers
           .map((value) => DropdownMenuItem<DropDownAnswer>(
-          value: value, child: Text(value.answer)))
+              value: value, child: Text(value.answer)))
           .toList(),
     );
-
   }
 }

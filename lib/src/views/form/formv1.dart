@@ -52,7 +52,9 @@ class _FormWidgetState extends State<FormWidget> {
                   itemBuilder: (BuildContext context, int section) {
                     return SectionWidget(
                         formKey: widget.formKey,
-                        form: widget.form, sectionId: section);
+                        form: widget.form,
+                      section: widget.form.sections[section],
+                    );
                   },
                 ),
               ),
