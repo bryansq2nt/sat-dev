@@ -35,8 +35,8 @@ class ApiProvider with ChangeNotifier {
       _url = "http://8.6.193.79:3000/api";
       _bucketUrl = "http://8.6.193.79:3000";
     } else if (environment == Environment.LOCAL) {
-      _url = "https://91aa-190-87-162-35.ngrok.io/api";
-      _bucketUrl = "https://91aa-190-87-162-35.ngrok.io";
+      _url = "https://2830-190-87-162-119.ngrok.io/api";
+      _bucketUrl = "https://2830-190-87-162-119.ngrok.io";
     }
 
     notifyListeners();

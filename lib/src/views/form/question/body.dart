@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/models/form/question_model.dart';
 import 'package:sat/src/models/form/questions/boolean.dart';
@@ -20,11 +21,12 @@ import '../open.dart';
 import '../switch.dart';
 
 class QuestionBody extends StatelessWidget {
+  final GlobalKey<FormBuilderState> formKey;
   final FormModel form;
   final dynamic question;
   final SectionModel section;
   const QuestionBody(
-      {Key? key, this.question, required this.section, required this.form})
+      {Key? key, this.question, required this.section, required this.form, required this.formKey})
       : super(key: key);
 
   @override
@@ -55,6 +57,7 @@ class QuestionBody extends StatelessWidget {
             question: currentQuestion.question,
             properties: currentQuestion.defaultProperties,
             body: ClosedFieldWidget(
+              formKey: formKey,
               form: form,
               question: currentQuestion.question,
               properties: currentQuestion.defaultProperties,

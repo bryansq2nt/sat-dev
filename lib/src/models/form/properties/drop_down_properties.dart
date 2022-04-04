@@ -1,5 +1,5 @@
 class DropDownQuestionProperties {
-  final List<DropDownAnswer> answers;
+  List<DropDownAnswer> answers;
   final List<DropDownAnswer> allAnswers;
   final bool hasChild;
   final DropDownChildren? principalChild;

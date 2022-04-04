@@ -7,7 +7,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/models/form/properties/default_question_properties.dart';
 import 'package:sat/src/models/form/question_model.dart';
-import 'package:sat/src/models/form/questions/dropdown.dart';
 import 'package:sat/src/models/form/section_model.dart';
 
 import '../../models/form/properties/drop_down_properties.dart';
@@ -15,14 +14,12 @@ import '../../models/form/properties/drop_down_properties.dart';
 class ClosedFieldWidget extends StatelessWidget {
   ClosedFieldWidget(
       {Key? key,
-        required this.formKey,
       required this.form,
       required this.question,
       required this.properties,
       required this.dropdownProperties})
       : super(key: key);
 
-  final GlobalKey<FormBuilderState> formKey;
   final FormModel form;
   final QuestionModel question;
   final DefaultQuestionProperties properties;
@@ -32,46 +29,62 @@ class ClosedFieldWidget extends StatelessWidget {
   DropDownAnswer? answer;
   bool loading = true;
 
-  getAnswers() {
-    loading = true;
-    answers = dropdownProperties.answers;
+  getAnswer() {
+    if (properties.answer != null) {
+      if (properties.answer is int) {
+        answer = answers
+            .firstWhere((element) => element.answerId == properties.answer);
+      }
+    }
     loading = false;
   }
 
-  onChangeValue(val) {
-    properties.answer = val;
-    if (dropdownProperties.hasChild) {
-      if (dropdownProperties.principalChild != null) {
-        changeChildAnswers();
-      }
-
-    }
+  getAnswers() {
+    answers = dropdownProperties.answers;
+    getAnswer();
   }
 
+  onChangeValue(val) {
+    if (dropdownProperties.multiSelect) {
+      properties.answer = val != null ? val.toString().split("|")[0] : null;
+    } else {
+      properties.answer = val;
+    }
 
-  changeChildAnswers() {
-    String pcQuestionId = dropdownProperties.principalChild!.question;
-    String pcSectionId = dropdownProperties.principalChild!.section;
+    if (dropdownProperties.hasChild == true) {
+      if (dropdownProperties.children != null &&
+          dropdownProperties.children!.isNotEmpty) {
+        dropdownProperties.children?.forEach((element) {
+          //search this question on form to change answers
+        });
+      }
+      if (dropdownProperties.principalChild != null) {
+        //search this question on form to change answers
 
+        for (int i = 0; i < form.sections.length; i++) {
+          if (form.sections[i].sectionId ==
+              dropdownProperties.principalChild?.section) {
+            for (int j = 0; j < form.sections[i].questions.length; j++) {
+              if (form.sections[i].questions[j].question.questionId ==
+                  dropdownProperties.principalChild!.question) {
+                form.sections[i].questions[j].dropdownProperties.answers
+                    .clear();
+                List<DropDownAnswer> newChildAnswers = [];
 
-    for (int i = 0; i < form.sections.length; i++) {
-      for (int j = 0; j < form.sections[i].questions.length; j++) {
-        if (form.sections[i].questions[j].question.questionId == pcQuestionId &&
-            form.sections[i].questions[j].question.sectionId == pcSectionId) {
-          if (form.sections[i].questions[j].dropdownProperties?.allAnswers !=
-              null) {
-            List<DropDownAnswer> newAnswers = [];
-            for (DropDownAnswer answer in form
-                .sections[i].questions[j].dropdownProperties!.allAnswers) {
+                for (DropDownAnswer answer in form
+                    .sections[i].questions[j].dropdownProperties.allAnswers) {
+                  if (answer.toCompare != null &&
+                      properties.answer != null &&
+                      answer.toCompare?.toLowerCase() ==
+                          properties.answer.answerId.toString().toLowerCase()) {
+                    newChildAnswers.add(answer);
+                  }
+                }
 
-              if (answer.toCompare!.toLowerCase() ==
-                  properties.answer?.answerId.toString().toLowerCase()) {
-                newAnswers.add(answer);
+                form.sections[i].questions[j].dropdownProperties.answers =
+                    newChildAnswers;
               }
             }
-            form.sections[i].questions[j].dropdownProperties.answers =
-                newAnswers;
-            formKey.currentState?.fields[pcQuestionId]?.didChange(null);
           }
         }
       }
@@ -126,42 +139,11 @@ class ClosedFieldWidget extends StatelessWidget {
       );
     }
 
-    if(answer != null){
-      return FormBuilderDropdown(
-        enabled: properties.enabled,
-        name: question.questionId,
-        hint: const Text("Seleccionar..."),
-        initialValue: answer,
-        decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Color(0xffcfe2ff)),
-                borderRadius: BorderRadius.circular(15.0)),
-            focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Color(0xffcfe2ff)),
-                borderRadius: BorderRadius.circular(15.0)),
-            border: OutlineInputBorder(
-                borderSide: const BorderSide(color: Color(0xffcfe2ff)),
-                borderRadius: BorderRadius.circular(15.0))),
-        allowClear: true,
-        validator: properties.required
-            ? FormBuilderValidators.required(
-          context,
-          errorText: 'Requerido',
-        )
-            : null,
-        onChanged: onChangeValue,
-        onSaved: (val) => properties.answer = val,
-        items: answers
-            .map((value) => DropdownMenuItem<DropDownAnswer>(
-            value: value, child: Text(value.answer)))
-            .toList(),
-      );
-    }
-
     return FormBuilderDropdown(
       enabled: properties.enabled,
       name: question.questionId,
       hint: const Text("Seleccionar..."),
+      initialValue: answer,
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Color(0xffcfe2ff)),
@@ -175,17 +157,16 @@ class ClosedFieldWidget extends StatelessWidget {
       allowClear: true,
       validator: properties.required
           ? FormBuilderValidators.required(
-        context,
-        errorText: 'Requerido',
-      )
+              context,
+              errorText: 'Requerido',
+            )
           : null,
       onChanged: onChangeValue,
       onSaved: (val) => properties.answer = val,
       items: answers
           .map((value) => DropdownMenuItem<DropDownAnswer>(
-          value: value, child: Text(value.answer)))
+              value: value, child: Text(value.answer)))
           .toList(),
     );
-
   }
 }

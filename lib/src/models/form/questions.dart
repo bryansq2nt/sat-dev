@@ -50,11 +50,11 @@ class QuestionsUtilities {
     return false;
   }
 
-  List<dynamic> getQuestions(json) {
+  List<dynamic> getQuestions({required Map<String, dynamic> json}) {
     List<dynamic> questions = [];
     for (var e in json['questions']) {
       QuestionModel defaultQuestion = QuestionModel(
-          sectionId: e['section_id'] ?? "",
+          sectionId: json['section_id'],
           questionId: e['question_id'],
           questionTitle: e['question'],
           dependent: e['dependent'] ?? false,

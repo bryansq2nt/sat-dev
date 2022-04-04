@@ -131,69 +131,17 @@ class AuthProvider with ChangeNotifier {
           _status = Status.Authenticated;
           notifyListeners();
         } else {
-          _status = Status.Unauthenticated;
-          notifyListeners();
+          localLogin(email: email, password: password);
         }
         EasyLoading.dismiss();
       }
     } on SocketException catch (e, stacktrace) {
       EasyLoading.dismiss();
+      localLogin(email: email, password: password);
       log('Socket Error: $e, stacktrace: $stacktrace');
-
-      final passwordLocal = prefs.password;
-      final emailLocal = prefs.email;
-      final userLocal = prefs.user;
-      jsonDecode(userLocal);
-
-      List<Module> modulos = [];
-      List<Role> roles = [];
-
-      final newUser = Map<String, dynamic>.from(jsonDecode(userLocal));
-
-      _status = Status.Authenticating;
-      notifyListeners();
-
-      if (email == emailLocal && password == passwordLocal) {
-        if (userLocal != null) {
-          for (var i = 0; i < newUser["modules"].length; i++) {
-            modulos.add(Module(
-                moduleId: newUser["modules"][i]["module_id"],
-                name: newUser["modules"][i]["name"]));
-          }
-          for (var i = 0; i < newUser["roles"].length; i++) {
-            roles.add(Role(
-                roleId: newUser["roles"][i]["role_id"],
-                name: newUser["roles"][i]["name"]));
-          }
-
-          _user = UserModel(
-              userId: newUser["user_id"],
-              name: newUser["name"],
-              userName: newUser["user_name"],
-              position: newUser["position"],
-              email: newUser["email"],
-              gender: newUser["gender"],
-              modules: modulos,
-              phone: newUser["phone"],
-              roles: roles);
-
-          await CrisisAttentionService().syncLocalData(crisisProv, context);
-          await EarlyWarningsService().syncLocalData(warnProv, context);
-          _status = Status.Authenticated;
-          notifyListeners();
-        } else {
-          _status = Status.Unauthenticated;
-          notifyListeners();
-        }
-      } else {
-        dialog(
-            'Usuario no encontrado, para acceder sin acceso a internet debes ingresar con el ultimo usuario autenticado.',
-            context);
-        _status = Status.Unauthenticated;
-        notifyListeners();
-      }
     } catch (e, stacktrace) {
       EasyLoading.dismiss();
+      localLogin(email: email, password: password);
       log('Not Dio Error: $e, stacktrace: $stacktrace');
     }
   }
@@ -218,5 +166,54 @@ class AuthProvider with ChangeNotifier {
     _user = null;
     Navigator.pushNamedAndRemoveUntil(context, '/root', (route) => false);
     notifyListeners();
+  }
+
+  void localLogin({required String email, required String password}) async {
+    final passwordLocal = prefs.password;
+    final emailLocal = prefs.email;
+    final userLocal = prefs.user;
+    jsonDecode(userLocal);
+
+    List<Module> modulos = [];
+    List<Role> roles = [];
+
+    final newUser = Map<String, dynamic>.from(jsonDecode(userLocal));
+
+    _status = Status.Authenticating;
+    notifyListeners();
+
+    if (email == emailLocal && password == passwordLocal) {
+      if (userLocal != null) {
+        for (var i = 0; i < newUser["modules"].length; i++) {
+          modulos.add(Module(
+              moduleId: newUser["modules"][i]["module_id"],
+              name: newUser["modules"][i]["name"]));
+        }
+        for (var i = 0; i < newUser["roles"].length; i++) {
+          roles.add(Role(
+              roleId: newUser["roles"][i]["role_id"],
+              name: newUser["roles"][i]["name"]));
+        }
+
+        _user = UserModel(
+            userId: newUser["user_id"],
+            name: newUser["name"],
+            userName: newUser["user_name"],
+            position: newUser["position"],
+            email: newUser["email"],
+            gender: newUser["gender"],
+            modules: modulos,
+            phone: newUser["phone"],
+            roles: roles);
+        _status = Status.Authenticated;
+        notifyListeners();
+      } else {
+        _status = Status.Unauthenticated;
+        notifyListeners();
+      }
+    } else {
+      _status = Status.Unauthenticated;
+      notifyListeners();
+    }
   }
 }

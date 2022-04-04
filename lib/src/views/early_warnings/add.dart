@@ -29,13 +29,12 @@ class _AddEarlyWarningViewState extends State<AddEarlyWarningView> {
       loading = true;
       error = false;
     });
-    this.form = await EarlyWarningsService().getFormToFill(context: context);
 
-
+    form = await EarlyWarningsService().getFormToFill(context: context);
 
     setState(() {
       loading = false;
-      error = this.form == null ? true : false;
+      error = form == null ? true : false;
     });
   }
 
@@ -163,11 +162,11 @@ class _AddEarlyWarningViewState extends State<AddEarlyWarningView> {
         btnOkOnPress: () {
           Navigator.pop(context, !added && !saved ? false : true);
         },
-        btnCancelOnPress: (){
+        btnCancelOnPress: () {
           return;
         },
-        btnOkColor: Color(0xFFF2B10F)
-    )..show();
+        btnOkColor: Color(0xFFF2B10F))
+      ..show();
   }
 
   @override

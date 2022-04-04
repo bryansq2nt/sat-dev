@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sat/src/models/form/form_v1.dart';
 import 'package:sat/src/models/form/section_model.dart';
 
@@ -9,9 +10,10 @@ import 'not_bold_title.dart';
 import 'question/body.dart';
 
 class SectionWidget extends StatelessWidget {
-  SectionWidget({Key? key, required this.form, required this.sectionId})
+  SectionWidget({Key? key, required this.form, required this.sectionId,required this.formKey})
       : super(key: key);
 
+  final GlobalKey<FormBuilderState> formKey;
   final FormModel form;
   late SectionModel section;
   final int sectionId;
@@ -43,6 +45,7 @@ class SectionWidget extends StatelessWidget {
             itemCount: section.questions.length,
             itemBuilder: (BuildContext context, int question) {
               return QuestionBody(
+                formKey: formKey,
                 form: form,
                 section: section,
                 question: section.questions[question],

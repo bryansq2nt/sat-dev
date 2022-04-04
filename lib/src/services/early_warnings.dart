@@ -39,13 +39,17 @@ class EarlyWarningsService {
   Future<FormModel?> getFormToFill({BuildContext? context}) async {
     try {
       bool currentFormUpdated = await checkFormVersion();
+
+
       if (!currentFormUpdated) {
+
         return await getNewForm();
       }
 
       FormModel? currentForm = await getCurrentForm();
 
       if (currentForm != null) {
+
         return currentForm;
       }
 
@@ -58,6 +62,7 @@ class EarlyWarningsService {
 
   Future<FormModel?> getNewForm() async {
     try {
+
       Response? response = await ApiProvider().makeRequest(
           type: MethodType.GET, endPoint: '/alerts/form/empty', okCode: 200);
 
@@ -485,6 +490,7 @@ class EarlyWarningsService {
 
   Future<FormModel?> getCurrentForm() async {
     try {
+
       Map<String, dynamic> json = await SaveLocallyService()
           .readFromLocal(fileName: "earlyWarningForm");
       FormModel formModel = FormModel.fromJson(json);
@@ -498,6 +504,7 @@ class EarlyWarningsService {
 
   Future<bool> checkFormVersion() async {
     try {
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       double currentVersion = prefs.getDouble("earlyWarningFormVersion") ?? 0.0;
       Response? response = await ApiProvider().makeRequest(
@@ -509,15 +516,16 @@ class EarlyWarningsService {
 
       double serverVersion = double.parse(response.data['version'].toString());
 
+      prefs.setDouble("earlyWarningFormVersion", serverVersion);
+
       if (serverVersion == currentVersion) {
         return true;
       }
 
-      prefs.setDouble("earlyWarningFormVersion", serverVersion);
       return false;
     } catch (e) {
       log(e.toString());
-      return false;
+      return true;
     }
   }
 }

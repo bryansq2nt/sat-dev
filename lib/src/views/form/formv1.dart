@@ -50,7 +50,9 @@ class _FormWidgetState extends State<FormWidget> {
                   shrinkWrap: true,
                   itemCount: widget.form.sections.length,
                   itemBuilder: (BuildContext context, int section) {
-                    return SectionWidget(form: widget.form, sectionId: section);
+                    return SectionWidget(
+                        formKey: widget.formKey,
+                        form: widget.form, sectionId: section);
                   },
                 ),
               ),
